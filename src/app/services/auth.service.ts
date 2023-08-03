@@ -15,13 +15,21 @@ export class AuthService {
       password,
     });
   }
-  
-  register(name: string, email: string, password: string){
+
+  register(name: string, email: string, password: string) {
     return this.http.post(this.apiUrl + 'auth/register', {
       name,
       email,
       password,
     });
   }
-  
+
+  isAvailableEmail(email: string) {
+    return this.http.post<{ isAvailable: boolean }>(
+      this.apiUrl + 'auth/is-available',
+      {
+        email,
+      }
+    );
+  }
 }

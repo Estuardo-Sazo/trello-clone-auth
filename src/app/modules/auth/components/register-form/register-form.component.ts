@@ -12,6 +12,9 @@ import { CustomValidators } from '@utils/validators';
   templateUrl: './register-form.component.html',
 })
 export class RegisterFormComponent {
+  formUser = this.formBuilder.nonNullable.group({
+    email: ['', [Validators.email, Validators.required]],
+  });
   form = this.formBuilder.nonNullable.group(
     {
       name: ['', [Validators.required]],
@@ -26,9 +29,11 @@ export class RegisterFormComponent {
     }
   );
   status: RequestStatus = 'init';
+  statusUser: RequestStatus = 'init';
   faEye = faEye;
   faEyeSlash = faEyeSlash;
   showPassword = false;
+  showRegister = false;
   message = '';
 
   constructor(
@@ -58,6 +63,36 @@ export class RegisterFormComponent {
       });
     } else {
       this.form.markAllAsTouched();
+    }
+  }
+
+  validateUser() {
+    if (this.formUser.valid) {
+      this.statusUser = 'loading';
+      const { email } = this.formUser.getRawValue();
+      this.authSvc.isAvailableEmail(email).subscribe({
+        next: (response) => {
+          console.log(response);
+          this.statusUser = 'success';
+          if (response.isAvailable) {
+            this.showRegister = true;
+            this.form.controls.email.setValue(email);
+          } else {
+            this.router.navigate(['/login'], {
+              queryParams: { email },
+            });
+          }
+        },
+        error: (error) => {
+          if (error.error.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+            this.message = 'This user already exists. Do you want to Login?';
+          }
+          this.statusUser = 'failed';
+          console.log(error);
+        },
+      });
+    } else {
+      this.formUser.markAllAsTouched();
     }
   }
 }
