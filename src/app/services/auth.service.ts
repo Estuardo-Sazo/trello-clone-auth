@@ -38,4 +38,17 @@ export class AuthService {
       }
     );
   }
+
+  recovery(email: string) {
+    return this.http.post(this.apiUrl + 'auth/recovery', {
+      email,
+    });
+  }
+
+  changePassword(token: string, newPassword: string) {
+    return this.http.post(this.apiUrl + 'auth/change-password', {
+      token,
+      newPassword,
+    });
+  }
 }
