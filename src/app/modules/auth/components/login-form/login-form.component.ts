@@ -29,6 +29,7 @@ export class LoginFormComponent {
       this.status = 'loading';
       const { email, password } = this.form.getRawValue();
       // TODO
+      
     } else {
       this.form.markAllAsTouched();
     }
