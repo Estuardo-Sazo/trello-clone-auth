@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
+import { getCookie, setCookie, removeCookie } from 'typescript-cookie';
 
 @Injectable({
   providedIn: 'root',
@@ -21,14 +22,19 @@ export class TokenService {
   } */
 
   saveToken(token: string) {
-    this._cookies.set('token-trello', token, 1, '/');
+    setCookie('token-trello', token, { expires: 1, path: '/' });
   }
 
   getToken() {
-    return this._cookies.get('token-trello');
+    const token = getCookie('token-trello');
+    return token;
+
   }
 
   removeToken() {
-    this._cookies.delete('token-trello');
+    console.log('delete Token');
+
+    removeCookie('token-trello');
+    console.log(this._cookies.get('token-trello'));
   }
 }
